@@ -1,0 +1,11 @@
+# Env files
+.env
+frontend-vet/.env
+api-vet/.env
+
+# Node
+node_modules/
+
+# Builds
+dist/
+build/
