@@ -4,6 +4,8 @@ import Paciente from "../models/Paciente.js"
 import mongoose from "mongoose"
 import { v2 as cloudinary } from 'cloudinary'
 import fs from "fs-extra"
+import { crearTokenJWT } from "../middlewares/JWT.js"
+
 
 const registrarPaciente = async (req, res) => {
 
@@ -136,10 +138,33 @@ const actualizarPaciente = async (req, res) => {
     }
 }
 
+const loginPropietario = async(req,res)=>{
+
+    try {
+        const {email:emailPropietario,password:passwordPropietario} = req.body
+        if (Object.values(req.body).includes("")) return res.status(404).json({msg:"Debes llenar todos los campos"})
+        const propietarioBDD = await Paciente.findOne({emailPropietario})
+        if(!propietarioBDD) return res.status(404).json({msg:"El propietario no se encuentra registrado"})
+        const verificarPassword = await propietarioBDD.matchPassword(passwordPropietario)
+        if(!verificarPassword) return res.status(404).json({msg:"El password no es el correcto"})
+        const token = crearTokenJWT(propietarioBDD._id,propietarioBDD.rol)
+        const {_id,rol} = propietarioBDD
+        res.status(200).json({
+            token,
+            rol,
+            _id
+        })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
+    }
+}
+
 export {
     registrarPaciente,
     listarPacientes,
     detallePaciente,
     eliminarPaciente,
-    actualizarPaciente
+    actualizarPaciente,
+    loginPropietario
 }
