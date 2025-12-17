@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react"
-import { useState } from "react"
 import { useFetch } from "../../hooks/useFetch"
 import { useNavigate } from "react-router"
 import { useForm } from "react-hook-form"
@@ -18,7 +17,7 @@ export const Form = ({patient}) => {
     })
 
     const navigate = useNavigate()
-    const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm()
+    const { register, handleSubmit, formState: { errors }, setValue, watch, reset } = useForm()
     const fetchDataBackend = useFetch()
 
 
@@ -79,7 +78,7 @@ export const Form = ({patient}) => {
         }
         else{
             response = await fetchDataBackend(url, formData, "POST", headers)
-        }        
+        }
         if (response) {
             setTimeout(() => {
                 navigate("/dashboard/list")
@@ -87,22 +86,21 @@ export const Form = ({patient}) => {
         }
     }
 
+
     useEffect(() => {
-            if (patient) {
-                reset({
-                    cedulaPropietario: patient?.cedulaPropietario,
-                    nombrePropietario: patient?.nombrePropietario,
-                    emailPropietario: patient?.emailPropietario,
-                    celularPropietario: patient?.celularPropietario,
-                    nombreMascota: patient?.nombreMascota,
-                    tipoMascota: patient?.tipoMascota,
-                    fechaNacimientoMascota: new Date(patient?.fechaNacimientoMascota).toLocaleDateString('en-CA', {timeZone: 'UTC'}),
-                    detalleMascota: patient?.detalleMascota
-                })
-            }
-        }, [])
-
-
+        if (patient) {
+            reset({
+                cedulaPropietario: patient?.cedulaPropietario,
+                nombrePropietario: patient?.nombrePropietario,
+                emailPropietario: patient?.emailPropietario,
+                celularPropietario: patient?.celularPropietario,
+                nombreMascota: patient?.nombreMascota,
+                tipoMascota: patient?.tipoMascota,
+                fechaNacimientoMascota: new Date(patient?.fechaNacimientoMascota).toLocaleDateString('en-CA', {timeZone: 'UTC'}),
+                detalleMascota: patient?.detalleMascota
+            })
+        }
+    }, [])
         return (
 
         <form onSubmit={handleSubmit(registerPatient)}>
@@ -213,7 +211,7 @@ export const Form = ({patient}) => {
                             type="radio"
                             value="ia"
                             {...register("imageOption", { required: "El nombre de la mascota es obligatorio" })}
-                            disabled={patient}
+                            //disabled={patient}
                         />
                         Generar con IA
                     </label>
@@ -224,7 +222,7 @@ export const Form = ({patient}) => {
                             type="radio"
                             value="upload"
                             {...register("imageOption", { required: "Seleccione una opción para cargar la imagen" })}
-                            disabled={patient}
+                            //disabled={patient}
                         />
                         Subir Imagen
                     </label>
