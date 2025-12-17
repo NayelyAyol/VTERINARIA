@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+import { useState, useEffect } from "react"
 import { useState } from "react"
 import { useFetch } from "../../hooks/useFetch"
 import { useNavigate } from "react-router"
@@ -7,7 +9,7 @@ import { toast, ToastContainer } from "react-toastify"
 const DEFAULT_AVATAR = "https://cdn-icons-png.flaticon.com/512/2138/2138440.png";
 
 
-export const Form = () => {
+export const Form = ({patient}) => {
 
     const [avatar, setAvatar] = useState({
         image: DEFAULT_AVATAR,
@@ -64,20 +66,44 @@ export const Form = () => {
                 formData.append(key, dataForm[key]) // se guardan nombre y edad
             }
         })
-        const url = `${import.meta.env.VITE_BACKEND_URL}/paciente/registro`
+        let url = `${import.meta.env.VITE_BACKEND_URL}/paciente/registro`
         const storedUser = JSON.parse(localStorage.getItem("auth-token"))
         const headers = {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${storedUser.state.token}`
         }
-        const response = await fetchDataBackend(url, formData, "POST", headers)
+        let response
+        if (patient?._id) {
+            url = `${import.meta.env.VITE_BACKEND_URL}/paciente/actualizar/${patient._id}`
+            response = await fetchDataBackend(url, formData, "PUT", headers)
+        }
+        else{
+            response = await fetchDataBackend(url, formData, "POST", headers)
+        }        
         if (response) {
             setTimeout(() => {
                 navigate("/dashboard/list")
             }, 2000)
         }
     }
-    return (
+
+    useEffect(() => {
+            if (patient) {
+                reset({
+                    cedulaPropietario: patient?.cedulaPropietario,
+                    nombrePropietario: patient?.nombrePropietario,
+                    emailPropietario: patient?.emailPropietario,
+                    celularPropietario: patient?.celularPropietario,
+                    nombreMascota: patient?.nombreMascota,
+                    tipoMascota: patient?.tipoMascota,
+                    fechaNacimientoMascota: new Date(patient?.fechaNacimientoMascota).toLocaleDateString('en-CA', {timeZone: 'UTC'}),
+                    detalleMascota: patient?.detalleMascota
+                })
+            }
+        }, [])
+
+
+        return (
 
         <form onSubmit={handleSubmit(registerPatient)}>
 
@@ -103,7 +129,7 @@ export const Form = () => {
                         />
 
                         <button className="py-1 px-8 bg-gray-600 text-slate-300 border rounded-xl hover:scale-110 
-                        duration-300 hover:bg-gray-900 hover:text-white sm:w-80">
+                        duration-300 hover:bg-gray-900 hover:text-white sm:w-80" disabled={patient}>
                             Consultar
                         </button>
                     </div>
@@ -187,6 +213,7 @@ export const Form = () => {
                             type="radio"
                             value="ia"
                             {...register("imageOption", { required: "El nombre de la mascota es obligatorio" })}
+                            disabled={patient}
                         />
                         Generar con IA
                     </label>
@@ -197,6 +224,7 @@ export const Form = () => {
                             type="radio"
                             value="upload"
                             {...register("imageOption", { required: "Seleccione una opción para cargar la imagen" })}
+                            disabled={patient}
                         />
                         Subir Imagen
                     </label>
@@ -299,7 +327,7 @@ export const Form = () => {
                 type="submit"
                 className="bg-gray-800 w-full p-2 mt-5 text-slate-300 uppercase font-bold rounded-lg 
                 hover:bg-gray-600 cursor-pointer transition-all"
-                value="Registrar"
+                value={patient ? "Actualizar" : "Registrar"}
             />
 
         </form>
