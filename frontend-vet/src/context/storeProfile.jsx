@@ -12,14 +12,28 @@ const getAuthHeaders = () => {
     }
 }
 
-const storeProfile = create((set) => ({
 
+const storeProfile = create((set) => ({
+        
     user: null,
     clearUser: () => set({ user: null }),
-
     profile: async () => {
         try {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/veterinario/perfil`
+            // Llamada al backend
+            // Determinar si es veterinario o paciente
+            const storedUser = JSON.parse(localStorage.getItem("auth-token"))
+            // Definir el endpoint según el rol
+            // Si el rol es veterinario, se usa "veterinario/perfil", si es paciente, "paciente/perfil"
+            // Se construye la URL completa
+            // Ejemplo: http://localhost:4000/veterinario/perfil
+            const endpoint = storedUser.state.rol ==="veterinario"
+                ? "veterinario/perfil"
+                : "paciente/perfil"
+            // Construir la URL completa
+            const url = `${import.meta.env.VITE_BACKEND_URL}/${endpoint}`
+            // Realizar la solicitud GET con los encabezados de autenticación
+            //console.log("URL de perfil:", url); // Depuración: mostrar la URL utilizada
+            // Realizar la solicitud GET con los encabezados de autenticación
             const respuesta = await axios.get(url, getAuthHeaders())
             set({ user: respuesta.data })
         } catch (error) {
@@ -27,18 +41,29 @@ const storeProfile = create((set) => ({
         }
     },
 
-    updatePasswordProfile: async (url, data) => {
+    updateProfile:async(url, data)=>{
         try {
             const respuesta = await axios.put(url, data, getAuthHeaders())
-            toast.success("Contraseña actualizada correctamente")
-            return { ok: true, data: respuesta.data }
+            set({ user: respuesta.data })
+            toast.success("Perfil actualizado correctamente")
         } catch (error) {
             console.log(error)
             toast.error(error.response?.data?.msg)
-            return { ok: false }
+        }
+    },
+    
+    updatePasswordProfile:async(url,data)=>{
+        try {
+            const respuesta = await axios.put(url, data, getAuthHeaders())
+            return respuesta
+        } catch (error) {
+            console.log(error)
+            toast.error(error.response?.data?.msg)
         }
     }
 
-}))
+    })
+    
+)
 
 export default storeProfile

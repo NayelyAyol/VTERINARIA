@@ -31,7 +31,12 @@ const Login = () => {
     // Se declara un método loginUser
 
     const loginUser = async(dataForm) => {
-        const url = `${import.meta.env.VITE_BACKEND_URL}/veterinario/login`
+        // Llamada al backend
+        // Determinar si es veterinario o paciente
+        // Si la contraseña incluye "VET", es veterinario
+        const url = dataForm.password.includes("VET")
+            ? `${import.meta.env.VITE_BACKEND_URL}/paciente/login`
+            : `${import.meta.env.VITE_BACKEND_URL}/veterinario/login`
         const response = await fetchDataBackend(url, dataForm,'POST')
 
         // Rutas privadas

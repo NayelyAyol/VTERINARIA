@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken" //importacion de la libreria
 import Veterinario from "../models/Veterinario.js" //Importacion del modelo
-
+import Paciente from "../models/Paciente.js" //Importacion del modelo
 
 /**
  * Crear token JWT
@@ -48,6 +48,10 @@ const verificarTokenJWT = async (req, res, next) => {
             next()
         }
         else{
+            //consulta para el paciente
+            //se importa el modelo paciente 
+            //comprobacion para verificar si el paciente existe en la base de datos
+            //niveles de acceso
             const pacienteBDD = await Paciente.findById(id).lean().select("-password")
             if (!pacienteBDD) return res.status(401).json({ msg: "Usuario no encontrado" })
             req.pacienteHeader = pacienteBDD
@@ -58,6 +62,11 @@ const verificarTokenJWT = async (req, res, next) => {
         return res.status(401).json({ msg: `Token inválido o expirado - ${error}` })
     }
 }
+
+//autorizacion modulos a los que la persona tiene acceso
+//autenticacion ingresar el usuaurio y la contraseña para decir quien es
+//autenticacion middleware para verificar el token
+
 
 export { 
     crearTokenJWT,
