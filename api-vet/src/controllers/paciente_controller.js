@@ -55,8 +55,15 @@ const listarPacientes = async (req, res) => {
         //se elimina la fecha de creacion, la fecha de salida
         //con el select se quitan los campos que no se desean
         //Metodo populate para mostrar los campos relacionados, Cambiar un ID por la información completa del documento relacionado.
+        if (req.pacienteHeader?.rol === "paciente") {
+            //pupulate para mostrar los datos del veterinario asociado al paciente
+            //se muestra el paciente logueado solo su informacion 
+            const pacientes = await Paciente.find(req.pacienteHeader.id).select("-salida -createdAt -updatedAt -__v -passwordPropietario").populate('veterinario', '_id nombre apellido')
+            return res.status(200).json(pacientes)
+        }else{
         const pacientes = await Paciente.find({ estadoMascota: true, veterinario: req.veterinarioHeader._id }).select("-salida -createdAt -updatedAt -__v -passwordPropietario").populate('veterinario', '_id nombre apellido')
         res.status(200).json(pacientes)
+        }
 
     } catch (error) {
         console.error(error)

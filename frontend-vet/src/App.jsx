@@ -18,16 +18,27 @@ import Panel from './pages/Panel'
 import PublicRoute from './routes/PublicRoute'
 import ProtectedRoute from './routes/ProtectedRoute'
 import PrivateRouteWithRole from './routes/PrivateRouteWithRole'
-
+import { useEffect } from 'react'
+import storeProfile from './context/storeProfile'
+import storeAuth from './context/storeAuth'
 
 
 function App() {
+  const { profile } = storeProfile()
+  const { token } = storeAuth()
+
+  useEffect(() => {
+    if (token) {
+      profile()
+    }
+  }, [token])
+
   return (
     <>
       <BrowserRouter>
         <Routes>
 
-          
+
           <Route element={<PublicRoute />}>
             <Route index element={<Home />} />
             <Route path='login' element={<Login />} />
@@ -40,34 +51,34 @@ function App() {
 
 
           <Route path='dashboard/*' element={
-              <ProtectedRoute>
-                <Routes>
-                  <Route element={<Dashboard />}>
-                    <Route index element={
-                      <PrivateRouteWithRole>
-                        <Panel />
-                      </PrivateRouteWithRole>
-                    } />
-                    <Route path='profile' element={<Profile />} />
-                    <Route path='list' element={<List />} />
-                    <Route path='details/:id' element={<Details />} />
-                    <Route path='create' element={
-                      <PrivateRouteWithRole>
-                        <Create />
-                      </PrivateRouteWithRole>
-                    } />
-                    <Route path='update/:id' element={
-                      <PrivateRouteWithRole>
-                        <Update />
-                      </PrivateRouteWithRole>
-                    } />
-                    <Route path='chat' element={<Chat />} />
-                  </Route>
-                </Routes>
-              </ProtectedRoute>
-              } />
+            <ProtectedRoute>
+              <Routes>
+                <Route element={<Dashboard />}>
+                  <Route index element={
+                    <PrivateRouteWithRole>
+                      <Panel />
+                    </PrivateRouteWithRole>
+                  } />
+                  <Route path='profile' element={<Profile />} />
+                  <Route path='list' element={<List />} />
+                  <Route path='details/:id' element={<Details />} />
+                  <Route path='create' element={
+                    <PrivateRouteWithRole>
+                      <Create />
+                    </PrivateRouteWithRole>
+                  } />
+                  <Route path='update/:id' element={
+                    <PrivateRouteWithRole>
+                      <Update />
+                    </PrivateRouteWithRole>
+                  } />
+                  <Route path='chat' element={<Chat />} />
+                </Route>
+              </Routes>
+            </ProtectedRoute>
+          } />
 
-      </Routes>
+        </Routes>
       </BrowserRouter>
     </>
   )

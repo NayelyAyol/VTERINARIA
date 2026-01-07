@@ -7,7 +7,7 @@ export const CardProfile = () => {
     return (
 
         <div className="bg-white border border-slate-200 h-auto p-4 
-                         flex flex-col items-center justify-between shadow-xl rounded-lg">
+                        flex flex-col items-center justify-between shadow-xl rounded-lg">
 
             <div className="relative">
 
@@ -38,9 +38,9 @@ export const CardProfile = () => {
             </div>
 
 
-            {/* Campo Celular (Corregido: usa user?.telefono) */}
+            {/* Campo Celular */}
             <div className="self-start">
-                <b>Celular:</b><p className="inline-block ml-3">{user?.telefono}</p>
+                <b>Celular:</b><p className="inline-block ml-3">{user?.celular}</p>
             </div>
 
             
