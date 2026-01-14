@@ -1,4 +1,5 @@
 import {Schema, model, mongoose} from 'mongoose';
+import Paciente from './Paciente.js';
 
 // Definición del esquema para Tratamiento
 // Incluye referencia al paciente asociado
@@ -33,7 +34,7 @@ const tratamientoSchema = new Schema({
     },
     // Campo de referencia al paciente
     paciente:{
-        type:mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref:'Paciente'
     }
 },{

@@ -1,6 +1,7 @@
 import { sendMailToOwner } from "../helpers/sendMail.js"
 import { subirBase64Cloudinary, subirImagenCloudinary } from "../helpers/uploadCloudinary.js"
 import Paciente from "../models/Paciente.js"
+import Tratamiento from "../models/Tratamiento.js"
 import mongoose from "mongoose"
 import { v2 as cloudinary } from 'cloudinary'
 import fs from "fs-extra"
@@ -80,7 +81,10 @@ const detallePaciente = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ msg: `No existe el veterinario ${id}` });
         //Paso 3: usar los dos metodos para delimitar lo que se desea mostrar
         const paciente = await Paciente.findById(id).select("-createdAt -updatedAt -__v").populate('veterinario', '_id nombre apellido')
-        //Paso 4: mostrar la respuesta
+        const tratamientos = await Tratamiento.find().where('paciente').equals(id)
+        paciente.tratamientos = tratamientos
+
+        //Paso 4: Imprimir el resultado
         res.status(200).json(paciente)
 
     } catch (error) {

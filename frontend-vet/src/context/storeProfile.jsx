@@ -14,26 +14,16 @@ const getAuthHeaders = () => {
 
 
 const storeProfile = create((set) => ({
-        
+
     user: null,
     clearUser: () => set({ user: null }),
     profile: async () => {
         try {
-            // Llamada al backend
-            // Determinar si es veterinario o paciente
             const storedUser = JSON.parse(localStorage.getItem("auth-token"))
-            // Definir el endpoint según el rol
-            // Si el rol es veterinario, se usa "veterinario/perfil", si es paciente, "paciente/perfil"
-            // Se construye la URL completa
-            // Ejemplo: http://localhost:4000/veterinario/perfil
-            const endpoint = storedUser.state.rol ==="veterinario"
+            const endpoint = storedUser.state.rol === "veterinario"
                 ? "veterinario/perfil"
                 : "paciente/perfil"
-            // Construir la URL completa
             const url = `${import.meta.env.VITE_BACKEND_URL}/${endpoint}`
-            // Realizar la solicitud GET con los encabezados de autenticación
-            //console.log("URL de perfil:", url); // Depuración: mostrar la URL utilizada
-            // Realizar la solicitud GET con los encabezados de autenticación
             const respuesta = await axios.get(url, getAuthHeaders())
             set({ user: respuesta.data })
         } catch (error) {
@@ -41,7 +31,7 @@ const storeProfile = create((set) => ({
         }
     },
 
-    updateProfile:async(url, data)=>{
+    updateProfile: async (url, data) => {
         try {
             const respuesta = await axios.put(url, data, getAuthHeaders())
             set({ user: respuesta.data })
@@ -51,8 +41,8 @@ const storeProfile = create((set) => ({
             toast.error(error.response?.data?.msg)
         }
     },
-    
-    updatePasswordProfile:async(url,data)=>{
+
+    updatePasswordProfile: async (url, data) => {
         try {
             const respuesta = await axios.put(url, data, getAuthHeaders())
             return respuesta
@@ -62,8 +52,8 @@ const storeProfile = create((set) => ({
         }
     }
 
-    })
-    
+})
+
 )
 
 export default storeProfile
