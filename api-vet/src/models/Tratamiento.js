@@ -14,7 +14,7 @@ const tratamientoSchema = new Schema({
     },
     detalle:{
         type:String,
-        required:true,
+        required:true,  
         trim:true
     },
     prioridad:{

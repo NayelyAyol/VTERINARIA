@@ -9,9 +9,11 @@ const ModalTreatments = ({patientID}) => {
     const { toggleModal, registerTreatments } = storeTreatments()
 
     const registerTreatmentsForm = (dataForm) => {
+        // CORRECCIÓN: Agregamos /api después de la URL base
         const url = `${import.meta.env.VITE_BACKEND_URL}/tratamiento/registro`
+        
         const newData = { ...dataForm, paciente: patientID }
-        registerTreatments(url,newData)
+        registerTreatments(url, newData)
     }
 
     return (

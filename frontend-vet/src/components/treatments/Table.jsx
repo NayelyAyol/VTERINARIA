@@ -1,8 +1,10 @@
 import { MdDeleteForever, MdAttachMoney  } from "react-icons/md"
 import storeTreatments from "../../context/storeTreatments"
-
+import storeAuth from "../../context/storeAuth"
 
 const TableTreatments = ({treatments,listPatient}) => {
+
+    const { rol } = storeAuth()
 
     const { deleteTreatments } = storeTreatments()
 
@@ -44,10 +46,14 @@ const TableTreatments = ({treatments,listPatient}) => {
                             <MdAttachMoney 
                                 className="h-7 w-7 text-slate-800 cursor-pointer inline-block mr-2 hover:text-green-600"
                                 title="Pagar"/>
-
-                            <MdDeleteForever
-                                className={treatment.estadoPago==="Pagado" ? "h-8 w-8 text-gray-500 pointer-events-none inline-block" :"h-8 w-8 text-red-900 cursor-pointer inline-block hover:text-red-600"}
-                                title="Eliminar" onClick={() => { handleDelete(treatment._id) }} />
+                            {
+                                rol==="veterinario" && 
+                                (
+                                    <MdDeleteForever
+                                        className={treatment.estadoPago==="Pagado" ? "h-8 w-8 text-gray-500 pointer-events-none inline-block" :"h-8 w-8 text-red-900 cursor-pointer inline-block hover:text-red-600"}
+                                        title="Eliminar" onClick={() => { handleDelete(treatment._id) }} />
+                                )
+                            }
                             </td>
                         </tr>
                     ))

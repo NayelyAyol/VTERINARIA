@@ -1,6 +1,7 @@
 import mongoose, {Schema,model} from 'mongoose'
 import bcrypt from "bcryptjs"
-
+import Tratamiento from './Tratamiento.js';
+import Veterinario from './Veterinario.js';
 
 const pacienteSchema = new Schema({
 
