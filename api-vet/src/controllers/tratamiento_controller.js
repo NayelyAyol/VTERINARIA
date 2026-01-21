@@ -45,22 +45,16 @@ const pagarTratamiento = async (req, res) => {
     }
 }
 
-const registrarTratamiento = async (req, res) => {
-    try{
-        //Paso 1
-            const {paciente} = req.body
+const registrarTratamiento = async (req,res)=>{
 
-        //Paso 2: Validar que los campos esten llenos
-            if (Object.values(req.body).includes("")) return res.status(400).json({ msg: "Debes llenar todos los campos" })
-            if (!mongoose.Types.ObjectId.isValid(paciente)) return res.status(404).json({ msg: `No existe el paciente ${paciente}` })
+    try {
+        const {paciente} = req.body
+        if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Debes llenar todos los campos"})
+        if( !mongoose.Types.ObjectId.isValid(paciente)) return res.status(404).json({msg:`No existe el paciente ${paciente}`})
+        await Tratamiento.create(req.body)
+        res.status(201).json({msg:"Registro exitoso del tratamiento"})
 
-        //Paso 3: Guardar el tratamiento
-            await Tratamiento.create(req.body)
-            
-        //Paso 4: Responder al usuario
-            res.status(201).json({ msg: "Tratamiento registrado exitosamente" })
-
-    }catch(error){
+    } catch (error) {
         console.error(error)
         res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
     }

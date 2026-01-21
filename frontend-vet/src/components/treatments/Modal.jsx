@@ -12,7 +12,11 @@ const ModalTreatments = ({patientID}) => {
         // CORRECCIÓN: Agregamos /api después de la URL base
         const url = `${import.meta.env.VITE_BACKEND_URL}/tratamiento/registro`
         
-        const newData = { ...dataForm, paciente: patientID }
+        const newData = { 
+            ...dataForm, 
+            precio: Number(dataForm.precio * 1.15),
+            paciente: patientID 
+        }
         registerTreatments(url, newData)
     }
 

@@ -1,12 +1,7 @@
-import {Schema, model, mongoose} from 'mongoose';
-import Paciente from './Paciente.js';
+import mongoose, {Schema,model} from 'mongoose'
 
-// Definición del esquema para Tratamiento
-// Incluye referencia al paciente asociado
-// Relacion muchos a uno (muchos tratamientos para un paciente)
-// Se usa populate en el controlador para obtener los datos completos del paciente
-// en lugar de solo el ID
 const tratamientoSchema = new Schema({
+
     nombre:{
         type:String,
         required:true,
@@ -14,7 +9,7 @@ const tratamientoSchema = new Schema({
     },
     detalle:{
         type:String,
-        required:true,  
+        required:true,
         trim:true
     },
     prioridad:{
@@ -32,15 +27,13 @@ const tratamientoSchema = new Schema({
         enum: ['Pendiente', 'Pagado'],
         default: 'Pendiente'
     },
-    // Campo de referencia al paciente
+    // Referencia al modelo de Paciente
     paciente:{
-        type: mongoose.Schema.Types.ObjectId,
+        type:mongoose.Schema.Types.ObjectId,
         ref:'Paciente'
     }
 },{
     timestamps:true
 })
 
-
-
-export default model('Tratamiento', tratamientoSchema);
+export default model('Tratamiento',tratamientoSchema)

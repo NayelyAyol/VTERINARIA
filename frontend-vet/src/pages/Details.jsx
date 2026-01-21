@@ -3,18 +3,20 @@ import { useEffect, useState } from "react"
 import TableTreatments from "../components/treatments/Table"
 import ModalTreatments from "../components/treatments/Modal"
 import { useParams } from "react-router"
-import { useFetch } from "../hooks/useFetch"
+import {useFetch} from "../hooks/useFetch"
 import storeAuth from "../context/storeAuth"
+
+
 import storeTreatments from "../context/storeTreatments"
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer} from 'react-toastify'
 
 
 const Details = () => {
-
+    
     const { id } = useParams()
     const [patient, setPatient] = useState({})
-    const fetchDataBackend = useFetch()
-    const [treatments, setTreatments] = useState(["demo"])
+    const  fetchDataBackend  = useFetch()
+    const [treatments, setTreatments] = useState([])
     const { rol } = storeAuth()
     const { modal, toggleModal } = storeTreatments()
 
@@ -22,35 +24,32 @@ const Details = () => {
         return new Date(date).toLocaleDateString('es-EC', { dateStyle: 'long', timeZone: 'UTC' })
     }
 
-
     const listPatient = async () => {
-        const url = `${import.meta.env.VITE_BACKEND_URL}/tratamiento/paciente/${id}`
+        const url = `${import.meta.env.VITE_BACKEND_URL}/paciente/${id}`
         const storedUser = JSON.parse(localStorage.getItem("auth-token"))
-
-        const headers = {
+        const headers= {
             "Content-Type": "application/json",
             Authorization: `Bearer ${storedUser.state.token}`
         }
-
         const response = await fetchDataBackend(url, null, "GET", headers)
-
+        console.log(response)
         setPatient(response)
-        setTreatments(response.tratamientos || [])
+        setTreatments(response.tratamientos)
     }
-
-
-    useEffect(() => {
-        if (modal === false) {
+    
+    
+    
+    useEffect(() => { 
+        if(modal===false){
             listPatient()
         }
     }, [modal])
 
 
 
-
     return (
         <>
-            <ToastContainer />
+            <ToastContainer/>
 
             <div>
                 <h1 className='font-black text-4xl text-gray-500'>Visualizar</h1>
@@ -86,7 +85,7 @@ const Details = () => {
                                 </li>
 
                                 <li className="text-md mt-2">
-                                    <span className="text-gray-600 font-bold">Celular: {patient?.celularPropietario}</span>
+                                <span className="text-gray-600 font-bold">Celular: {patient?.celularPropietario}</span>
                                 </li>
 
                             </ul>
@@ -115,7 +114,7 @@ const Details = () => {
                                     <span className="text-gray-600 font-bold">Estado: </span>
                                     <span className="bg-blue-100 text-green-500 text-xs font-medium 
                                         mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
-                                        {patient?.estadoMascota && "activo"}
+                                    {patient?.estadoMascota && "activo"}
                                     </span>
                                 </li>
 
@@ -127,8 +126,8 @@ const Details = () => {
                         </ul>
 
                     </div>
-
-
+                    
+                    
                     {/* Imagen lateral */}
                     <div>
                         <img src={patient?.avatarMascota || patient?.avatarMascotaIA} alt="dogandcat" className='h-80 w-80 rounded-full' />
@@ -146,19 +145,19 @@ const Details = () => {
                     {/* Apertura del modal tratamientos */}
                     <p>Este módulo te permite gestionar tratamientos</p>
                     {
-                        rol === "veterinario" &&
+                        rol==="veterinario" &&
                         (
                             <button className="px-5 py-2 bg-green-800 text-white rounded-lg
-                            hover:bg-green-700" onClick={() => { toggleModal("treatments") }} >
+                            hover:bg-green-700" onClick={()=>{toggleModal("treatments")}} >
                                 Registrar
                             </button>
                         )
                     }
 
-                    {modal === "treatments" && (<ModalTreatments patientID={patient._id} />)}
+                    {modal === "treatments" && (<ModalTreatments patientID={patient._id}/>)}
 
                 </div>
-
+                
 
                 {/* Mostrar los tratamientos */}
                 {
@@ -170,7 +169,7 @@ const Details = () => {
                         :
                         <TableTreatments treatments={treatments} listPatient={listPatient} />
                 }
-
+                
             </div>
         </>
 
